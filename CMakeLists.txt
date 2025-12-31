@@ -20,6 +20,9 @@ install(DIRECTORY
   rviz
   worlds
   urdf
+  maps
+  src
+  meshes
 DESTINATION share/${PROJECT_NAME}
 )
 
