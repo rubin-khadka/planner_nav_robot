@@ -56,9 +56,9 @@ def generate_launch_description():
 
     # Define the path to your URDF or Xacro file
     urdf_file_path = PathJoinSubstitution([
-        pkg_planner_nav_robot,  # Replace with your package name
+        pkg_planner_nav_robot,  
         "urdf",
-        LaunchConfiguration('model')  # Replace with your URDF or Xacro file
+        LaunchConfiguration('model')  
     ])
 
     gz_bridge_params_path = os.path.join(
@@ -87,7 +87,6 @@ def generate_launch_description():
         ]
     )
 
-    # Spawn the URDF model using the `/world/<world_name>/create` service
     spawn_urdf_node = Node(
         package="ros_gz_sim",
         executable="create",
