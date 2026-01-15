@@ -82,3 +82,42 @@ source ~/.bashrc
 ```
 
 ## Launching the System
+
+### Launch the Robot with Gazebo Environment
+```bash
+ros2 launch planner_nav_robot spawn_robot.launch.py 
+```
+### Launch Navigation Stack
+```bash
+ros2 launch planner_nav_robot navigation.launch.py 
+```
+
+## Implementation Details
+
+## Project Structure
+```bash
+aruco_marker_robot/
+├── launch/
+│   ├── aruco_world.launch.launch.py
+│   └── diff_aruco_world.launch.launch.py
+├── gazebo_models/
+│   └── aruco_box/
+├── src/
+│   └── aruco_marker_processor.cpp
+├── urdf/
+│   ├── diff_marker_follower_robot.gazebo
+│   ├── diff_marker_follower_robot.urdf
+│   ├── marker_follower_robot.gazebo
+│   ├── marker_follower_robot.urdf
+│   └── materials.xacro
+├── worlds/
+│   └── marker_world.sdf
+├── config/
+│   ├── bridge_parameters.yaml
+│   └── ekf.yaml
+├── rviz/
+│   └── visualize.rviz
+├── CMakeLists.txt
+├── package.xml
+└── README.md
+```

@@ -9,10 +9,80 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(cv_bridge REQUIRED)
-find_package(nav_msgs REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(plansys2_pddl_parser REQUIRED)
+find_package(plansys2_msgs REQUIRED)
+find_package(plansys2_domain_expert REQUIRED)
+find_package(plansys2_planner REQUIRED)
+find_package(plansys2_problem_expert REQUIRED)
+find_package(plansys2_executor REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(nav2_msgs REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
+
+
+add_executable(get_plan_and_execute src/get_plan_and_execute.cpp)
+add_executable(navigate_to_waypoint src/navigate_to_waypoint.cpp)
+add_executable(detect_marker_action src/detect_marker_action.cpp)
+add_executable(sorting_marker_action src/sorting_marker_action.cpp)
+
+ament_target_dependencies(get_plan_and_execute
+  rclcpp
+  plansys2_pddl_parser
+  plansys2_msgs
+  plansys2_domain_expert
+  plansys2_planner
+  plansys2_problem_expert
+  plansys2_executor
+  rclcpp_action
+)
+
+ament_target_dependencies(navigate_to_waypoint
+  rclcpp
+  rclcpp_action
+  plansys2_pddl_parser
+  plansys2_executor
+  plansys2_problem_expert 
+  plansys2_msgs
+  geometry_msgs
+  nav2_msgs
+  lifecycle_msgs
+)
+
+ament_target_dependencies(detect_marker_action
+  rclcpp
+  rclcpp_action
+  plansys2_pddl_parser
+  plansys2_problem_expert
+  plansys2_executor
+  plansys2_msgs
+  geometry_msgs
+  nav2_msgs
+  lifecycle_msgs
+)
+
+ament_target_dependencies(sorting_marker_action
+  rclcpp
+  rclcpp_action
+  plansys2_pddl_parser
+  plansys2_problem_expert
+  plansys2_executor
+  plansys2_msgs
+  geometry_msgs
+  nav2_msgs
+  lifecycle_msgs
+)
+
+install(TARGETS
+  get_plan_and_execute
+  navigate_to_waypoint
+  detect_marker_action
+  sorting_marker_action
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 install(DIRECTORY
   config
@@ -22,6 +92,8 @@ install(DIRECTORY
   urdf
   maps
   meshes
+  src
+  pddl
 DESTINATION share/${PROJECT_NAME}
 )
 
