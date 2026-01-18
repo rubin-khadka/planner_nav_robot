@@ -2,6 +2,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
@@ -166,6 +167,19 @@ def generate_launch_description():
         output='screen',
         parameters=[])
     
+    controller_cmd = Node(
+        package='planner_nav_robot',
+        executable='get_plan_and_execute', 
+        name='get_plan_and_execute',
+        namespace=namespace,
+        output='screen',
+        parameters=[])
+    
+    delayed_controller_cmd = TimerAction(
+        period= 5.0,
+        actions=[controller_cmd]
+    )
+    
     ld = LaunchDescription()
 
     ld.add_action(declare_model_file_cmd)
@@ -187,5 +201,7 @@ def generate_launch_description():
     ld.add_action(detect_marker_cmd)
     ld.add_action(image_process_cmd)
     ld.add_action(sorting_marker_cmd)
+
+    ld.add_action(delayed_controller_cmd)
     
     return ld
