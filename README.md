@@ -104,25 +104,49 @@ Everything works automatically.
 ```bash
 aruco_marker_robot/
 ├── launch/
-│   ├── aruco_world.launch.launch.py
-│   └── diff_aruco_world.launch.launch.py
+│   ├── mapping.launch.py
+│   ├── navigation.launch.py
+│   ├── plansys_plan.launch.py
+│   ├── spawn_robot.launch.py
+│   └── world.launch.py
 ├── gazebo_models/
 │   └── aruco_box/
 ├── src/
-│   └── aruco_marker_processor.cpp
-├── urdf/
-│   ├── diff_marker_follower_robot.gazebo
-│   ├── diff_marker_follower_robot.urdf
-│   ├── marker_follower_robot.gazebo
-│   ├── marker_follower_robot.urdf
+│   ├── detect_marker_action.cpp
+│   ├── get_plan_and_execute.cpp
+│   ├── image_process_action.cpp
+│   ├── navigate_to_marker.cpp
+│   ├── navigate_to_waypoint.cpp
+│   └── sorting_marker_action.cpp
+├── maps/
+│   ├── mogi_bot.gazebo
+│   ├── mogi_bot.urdf
 │   └── materials.xacro
+├── meshes/
+│   ├── lidar.dae
+│   ├── mogi_bot.dae
+│   └── wheel.dae
+├── urdf/
+│   ├── my_map.pgm
+│   └── my_map.yaml
+├── pddl/
+│   ├── domain.pddl
+│   └── problem.pddl
+├── msg/
+│   └── MarkerList.msg
 ├── worlds/
-│   └── marker_world.sdf
+│   └── simple_world.sdf
 ├── config/
-│   ├── bridge_parameters.yaml
-│   └── ekf.yaml
+│   ├── amcl_localization.yaml
+│   ├── ekf.yaml
+│   ├── gz_bridge.yaml
+│   └── navigation.yaml
 ├── rviz/
-│   └── visualize.rviz
+│   ├── localization.rviz
+│   ├── mapping.rviz
+│   ├── navigation.rviz
+│   ├── rviz.rviz
+│   └── urdf.rviz
 ├── CMakeLists.txt
 ├── package.xml
 └── README.md
