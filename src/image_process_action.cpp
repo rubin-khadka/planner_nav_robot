@@ -29,13 +29,13 @@ public:
     // Start image processing in a separate thread
     processing_thread_ = std::thread(&ImageProcessAction::processing_loop, this);
     
-    RCLCPP_INFO(get_logger(), "Image processor ready (will only run when action is active)");
+    printf("Image processor ready (will only run when action is active)\n");
   }
 
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   on_configure(const rclcpp_lifecycle::State & previous_state)
   {
-    RCLCPP_INFO(get_logger(), "Image processor configured");
+    printf("Image processor configured\n");
     return ActionExecutorClient::on_configure(previous_state);
   }
 
@@ -53,7 +53,7 @@ public:
     auto arguments = get_arguments();
     
     if (arguments.size() < 2) {
-      RCLCPP_ERROR(get_logger(), "Need robot and waypoint arguments");
+      printf("ERROR: Need robot and waypoint arguments\n");
       finish(false, 0.0, "Invalid arguments");
       return;
     }
@@ -63,7 +63,7 @@ public:
     
     // First call - start image processing
     if (!is_active_) {
-      RCLCPP_INFO(get_logger(), "Starting image processing at waypoint: %s", wp.c_str());
+      printf("Starting image processing at waypoint: %s\n", wp.c_str());
       is_active_ = true;
       is_centered_ = false;
       progress_ = 0.0;
@@ -82,6 +82,7 @@ public:
       
       if (elapsed >= 2.0) {
         // Complete the action
+        printf("Image processing complete at %s\n", wp.c_str());
         finish(true, 1.0, "Image processing complete at " + wp);
         is_active_ = false;
         stop_robot();
@@ -113,10 +114,13 @@ private:
     parameters_->adaptiveThreshWinSizeMax = 23;
     parameters_->adaptiveThreshConstant = 7.0;
     parameters_->minMarkerPerimeterRate = 0.03;
+    
+    printf("ROS components setup complete\n");
   }
 
   void processing_loop()
   {
+    printf("Image processing thread started\n");
     while (rclcpp::ok()) {
       // Only process if action is active
       if (is_active_) {
@@ -129,6 +133,7 @@ private:
       // Handle callbacks
       rclcpp::spin_some(node_);
     }
+    printf("Image processing thread stopped\n");
   }
 
   void process_image_once()
@@ -136,7 +141,9 @@ private:
     sensor_msgs::msg::Image::SharedPtr msg;
     {
       std::lock_guard<std::mutex> lock(image_mutex_);
-      if (!latest_image_) return;
+      if (!latest_image_) {
+        return;
+      }
       msg = latest_image_;
     }
     
@@ -151,8 +158,8 @@ private:
       cv::aruco::detectMarkers(image, dictionary_, marker_corners, marker_ids, parameters_);
       
       if (!marker_ids.empty()) {
-        
         cv::aruco::drawDetectedMarkers(display_image, marker_corners, marker_ids);
+        
         // Get first marker center
         cv::Point2f center(0, 0);
         for (const auto& corner : marker_corners[0]) {
@@ -169,10 +176,6 @@ private:
         cv::Point2f image_center(display_image.cols / 2.0, display_image.rows / 2.0);
         double error_x = center.x - image_center.x;
         
-        // Draw center point and line
-        cv::circle(display_image, image_center, 5, cv::Scalar(255, 0, 0), -1);
-        cv::line(display_image, image_center, center, cv::Scalar(0, 255, 0), 2);
-        
         // Servoing (only if action is active and not centered yet)
         if (!is_centered_) {
           if (std::abs(error_x) > 10.0) {  // center_threshold = 10 pixels
@@ -180,31 +183,26 @@ private:
             auto twist = geometry_msgs::msg::Twist();
             twist.angular.z = -0.01 * error_x;  // kp_angular = 0.01
             cmd_vel_pub_->publish(twist);
+            printf("Centering: error_x = %.2f, angular.z = %.4f\n", error_x, twist.angular.z);
           } else {
             // Centered - stop and record time
             is_centered_ = true;
             center_start_time_ = rclcpp::Clock().now();
             stop_robot();
-            RCLCPP_INFO(node_->get_logger(), "Marker centered at waypoint: %s", current_waypoint_.c_str());
+            printf("Marker centered at waypoint: %s\n", current_waypoint_.c_str());
           }
         } else {
           // Already centered - keep robot stopped
           stop_robot();
         }
-        
-        // Add status text
-        std::string status = is_centered_ ? "CENTERED" : "CENTERING";
-        
       } else {
         // No markers - rotate to search (only if not centered yet)
         if (!is_centered_) {
           auto twist = geometry_msgs::msg::Twist();
           twist.angular.z = 0.3;
           cmd_vel_pub_->publish(twist);
+          printf("No markers found - searching at waypoint: %s\n", current_waypoint_.c_str());
         }
-        
-        cv::putText(display_image, "Searching for markers at " + current_waypoint_, 
-                   cv::Point(10, 30), cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(0, 165, 255), 2);
       }
       
       // Publish processed image to topic
@@ -212,7 +210,7 @@ private:
       processed_image_pub_->publish(*processed_msg);
       
     } catch (const std::exception& e) {
-      RCLCPP_ERROR(node_->get_logger(), "Error: %s", e.what());
+      printf("Error in image processing: %s\n", e.what());
     }
   }
 
@@ -249,6 +247,7 @@ private:
 
 int main(int argc, char ** argv)
 {
+  printf("Starting Image Process Action node\n");
   rclcpp::init(argc, argv);
   
   auto node = std::make_shared<ImageProcessAction>();
@@ -257,8 +256,10 @@ int main(int argc, char ** argv)
   node->trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE);
   node->trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE);
   
+  printf("Image Process Action node running\n");
   rclcpp::spin(node->get_node_base_interface());
   
   rclcpp::shutdown();
+  printf("Image Process Action node shutdown\n");
   return 0;
 }
