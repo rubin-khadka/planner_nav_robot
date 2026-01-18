@@ -2,7 +2,7 @@
   (:requirements :strips :typing :adl :durative-actions)
 
   (:types
-    robot waypoint
+    robot waypoint marker
   )
 
   (:predicates
