@@ -26,6 +26,7 @@ public:
       std::bind(&SortMarkersAction::raw_markers_callback, this, std::placeholders::_1));
     
     printf("[SORT] Sorting node initialized\n");
+    printf("[SORT] Waiting for raw markers on /raw_markers topic\n");
   }
 
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn

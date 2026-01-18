@@ -38,7 +38,7 @@ public:
       
     // Create publisher for raw marker data
     marker_pub_ = create_publisher<planner_nav_robot::msg::MarkerList>(
-      "/markers", 10);  // Changed topic name
+      "/markers", 10); 
     
     printf("[DETECT] Detection node initialized\n");
   }

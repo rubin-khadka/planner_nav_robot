@@ -29,13 +29,12 @@ public:
     // Start image processing in a separate thread
     processing_thread_ = std::thread(&ImageProcessAction::processing_loop, this);
     
-    printf("Image processor ready (will only run when action is active)\n");
+    printf("[PROCESS] Image processor ready\n");
   }
 
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   on_configure(const rclcpp_lifecycle::State & previous_state)
   {
-    printf("Image processor configured\n");
     return ActionExecutorClient::on_configure(previous_state);
   }
 
@@ -53,7 +52,7 @@ public:
     auto arguments = get_arguments();
     
     if (arguments.size() < 2) {
-      printf("ERROR: Need robot and waypoint arguments\n");
+      printf("[ERROR] Need robot and waypoint arguments\n");
       finish(false, 0.0, "Invalid arguments");
       return;
     }
@@ -63,7 +62,7 @@ public:
     
     // First call - start image processing
     if (!is_active_) {
-      printf("Starting image processing at waypoint: %s\n", wp.c_str());
+      printf("[PROCESS]Starting image processing at waypoint: %s\n", wp.c_str());
       is_active_ = true;
       is_centered_ = false;
       progress_ = 0.0;
@@ -82,7 +81,7 @@ public:
       
       if (elapsed >= 2.0) {
         // Complete the action
-        printf("Image processing complete at %s\n", wp.c_str());
+        printf("[PROCESS] Image processing complete at %s\n", wp.c_str());
         finish(true, 1.0, "Image processing complete at " + wp);
         is_active_ = false;
         stop_robot();
@@ -115,12 +114,10 @@ private:
     parameters_->adaptiveThreshConstant = 7.0;
     parameters_->minMarkerPerimeterRate = 0.03;
     
-    printf("ROS components setup complete\n");
   }
 
   void processing_loop()
   {
-    printf("Image processing thread started\n");
     while (rclcpp::ok()) {
       // Only process if action is active
       if (is_active_) {
@@ -133,7 +130,6 @@ private:
       // Handle callbacks
       rclcpp::spin_some(node_);
     }
-    printf("Image processing thread stopped\n");
   }
 
   void process_image_once()
@@ -183,16 +179,13 @@ private:
             auto twist = geometry_msgs::msg::Twist();
             twist.angular.z = -0.01 * error_x;  // kp_angular = 0.01
             cmd_vel_pub_->publish(twist);
-            printf("Centering: error_x = %.2f, angular.z = %.4f\n", error_x, twist.angular.z);
           } else {
             // Centered - stop and record time
             is_centered_ = true;
             center_start_time_ = rclcpp::Clock().now();
             stop_robot();
-            printf("Marker centered at waypoint: %s\n", current_waypoint_.c_str());
           }
         } else {
-          // Already centered - keep robot stopped
           stop_robot();
         }
       } else {
@@ -247,7 +240,6 @@ private:
 
 int main(int argc, char ** argv)
 {
-  printf("Starting Image Process Action node\n");
   rclcpp::init(argc, argv);
   
   auto node = std::make_shared<ImageProcessAction>();
@@ -256,10 +248,8 @@ int main(int argc, char ** argv)
   node->trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE);
   node->trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE);
   
-  printf("Image Process Action node running\n");
   rclcpp::spin(node->get_node_base_interface());
   
   rclcpp::shutdown();
-  printf("Image Process Action node shutdown\n");
   return 0;
 }

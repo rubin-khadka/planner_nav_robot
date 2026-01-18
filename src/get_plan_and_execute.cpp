@@ -53,50 +53,48 @@ public:
 
   void plan()
   {
-
     auto domain = domain_expert_->getDomain();
     auto problem = problem_expert_->getProblem();
     auto plan = planner_client_->getPlan(domain, problem);
 
     if (!plan.has_value()) {
-    std::cout << "Could not find plan to reach goal " <<
-        parser::pddl::toString(problem_expert_->getGoal()) << std::endl;
+      std::cout << "Could not find plan to reach goal " <<
+          parser::pddl::toString(problem_expert_->getGoal()) << std::endl;
+    } else {
+      std::cout << plan.value() << std::endl;
+      executor_client_->start_plan_execution(plan.value());
     }
-
-    else{
-    std::cout << plan.value() << std::endl;
-    executor_client_->start_plan_execution(plan.value());
-    }
-      
-
   }
 
 private:
-
-void action_feedback_callback(const plansys2_msgs::msg::ActionExecutionInfo::SharedPtr msg)
-{
-    if(msg->action_full_name !=":0"){
-    action_completion_map_[msg->action_full_name] = msg->completion;
-    std::cout << "Action: " << msg->action_full_name
-              << " | Completion: " << (msg->completion * 100.0) << "%"
-              << " | Status: ";
-    switch(msg->status) {
-        case plansys2_msgs::msg::ActionExecutionInfo::NOT_EXECUTED:
-            std::cout << "NOT_EXECUTED"; break;
-        case plansys2_msgs::msg::ActionExecutionInfo::EXECUTING:
-            std::cout << "EXECUTING"; break;
-        case plansys2_msgs::msg::ActionExecutionInfo::SUCCEEDED:
-            std::cout << "SUCCEEDED"; break;
-        case plansys2_msgs::msg::ActionExecutionInfo::FAILED:
-            std::cout << "FAILED"; break;
-        case plansys2_msgs::msg::ActionExecutionInfo::CANCELLED:
-            std::cout << "CANCELLED"; break;
-        default:
-            std::cout << "UNKNOWN"; break;
+  void action_feedback_callback(const plansys2_msgs::msg::ActionExecutionInfo::SharedPtr msg)
+  {
+    if(msg->action_full_name != ":0") {
+      // Only print when status changes or action completes
+      if(last_status_[msg->action_full_name] != msg->status || 
+         (msg->status == plansys2_msgs::msg::ActionExecutionInfo::SUCCEEDED && 
+          action_completion_map_[msg->action_full_name] < 1.0)) {
+        
+        std::cout << "Action: " << msg->action_full_name;
+        
+        if(msg->status == plansys2_msgs::msg::ActionExecutionInfo::EXECUTING) {
+          std::cout << " started execution";
+        } else if(msg->status == plansys2_msgs::msg::ActionExecutionInfo::SUCCEEDED) {
+          std::cout << " COMPLETED successfully";
+        } else if(msg->status == plansys2_msgs::msg::ActionExecutionInfo::FAILED) {
+          std::cout << " FAILED";
+        } else if(msg->status == plansys2_msgs::msg::ActionExecutionInfo::CANCELLED) {
+          std::cout << " was CANCELLED";
+        }
+        std::cout << std::endl;
+        
+        last_status_[msg->action_full_name] = msg->status;
+      }
+      
+      action_completion_map_[msg->action_full_name] = msg->completion;
     }
-    std::cout << std::endl;
-  }
 
+    // Check if all actions are done
     bool all_done = true;
     for (auto & a : action_completion_map_) {
         if (a.second < 1.0) {
@@ -106,16 +104,18 @@ void action_feedback_callback(const plansys2_msgs::msg::ActionExecutionInfo::Sha
     }
 
     if (all_done) {
-        std::cout << "Everything done!!" << std::endl;
+        std::cout << "All actions completed successfully!" << std::endl;
         rclcpp::shutdown();
     }
-}
+  }
+
   std::shared_ptr<plansys2::DomainExpertClient> domain_expert_;
   std::shared_ptr<plansys2::PlannerClient> planner_client_;
   std::shared_ptr<plansys2::ProblemExpertClient> problem_expert_;
   std::shared_ptr<plansys2::ExecutorClient> executor_client_;
   rclcpp::Subscription<plansys2_msgs::msg::ActionExecutionInfo>::SharedPtr action_feedback_sub_;
   std::map<std::string, float> action_completion_map_;
+  std::map<std::string, uint8_t> last_status_;  
 };
 
 int main(int argc, char ** argv)
