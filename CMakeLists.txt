@@ -19,6 +19,11 @@ find_package(plansys2_executor REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav2_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(image_transport REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
@@ -26,7 +31,9 @@ find_package(nav2_msgs REQUIRED)
 
 add_executable(get_plan_and_execute src/get_plan_and_execute.cpp)
 add_executable(navigate_to_waypoint src/navigate_to_waypoint.cpp)
+add_executable(navigate_to_marker src/navigate_to_marker.cpp)
 add_executable(detect_marker_action src/detect_marker_action.cpp)
+add_executable(image_process_action src/image_process_action.cpp)
 add_executable(sorting_marker_action src/sorting_marker_action.cpp)
 
 ament_target_dependencies(get_plan_and_execute
@@ -50,6 +57,22 @@ ament_target_dependencies(navigate_to_waypoint
   geometry_msgs
   nav2_msgs
   lifecycle_msgs
+  tf2
+  tf2_geometry_msgs
+)
+
+ament_target_dependencies(navigate_to_marker
+  rclcpp
+  rclcpp_action
+  plansys2_pddl_parser
+  plansys2_executor
+  plansys2_problem_expert 
+  plansys2_msgs
+  geometry_msgs
+  nav2_msgs
+  lifecycle_msgs
+  tf2
+  tf2_geometry_msgs
 )
 
 ament_target_dependencies(detect_marker_action
@@ -62,6 +85,26 @@ ament_target_dependencies(detect_marker_action
   geometry_msgs
   nav2_msgs
   lifecycle_msgs
+  sensor_msgs
+  cv_bridge
+  image_transport
+  OpenCV
+)
+
+ament_target_dependencies(image_process_action
+  rclcpp
+  rclcpp_action
+  plansys2_pddl_parser
+  plansys2_problem_expert
+  plansys2_executor
+  plansys2_msgs
+  geometry_msgs
+  nav2_msgs
+  lifecycle_msgs
+  sensor_msgs
+  cv_bridge
+  image_transport
+  OpenCV
 )
 
 ament_target_dependencies(sorting_marker_action
@@ -79,7 +122,9 @@ ament_target_dependencies(sorting_marker_action
 install(TARGETS
   get_plan_and_execute
   navigate_to_waypoint
+  navigate_to_marker
   detect_marker_action
+  image_process_action
   sorting_marker_action
   DESTINATION lib/${PROJECT_NAME}
 )
