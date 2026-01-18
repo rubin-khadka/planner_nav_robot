@@ -29,22 +29,24 @@ The Robot we created was not working properly with nav2 so we decided to take Ro
 ## Video Demonstrations
 
 ### Phase 1: Navigate and Detect all Marker(High Quality)
-
-https://github.com/user-attachments/assets/64d0b4f2-a5a4-4002-950c-c4ea55feb494
-
+https://github.com/user-attachments/assets/64d0b4f2-a5a4-4002-950c-c4ea55feb494 <br>
+The robot explores the environment and detects all ArUco markers.
 
 ### Phase 2: Return to Starting Point and Sort the Received Markers (High Quality)
-https://github.com/user-attachments/assets/40baffac-e5bf-4ac1-96e7-4bd717320511
-
+https://github.com/user-attachments/assets/40baffac-e5bf-4ac1-96e7-4bd717320511 <br>
+The robot returns to the starting point and sorts detected markers.
 
 ### Phase 3: Navigate to Sorted Marker and Process Image (High Quality)
-https://github.com/user-attachments/assets/d88f0765-4c75-4fda-be30-225bf08e76a2
+https://github.com/user-attachments/assets/d88f0765-4c75-4fda-be30-225bf08e76a2 <br>
+The robot navigates to specific markers based on the sorting results.
 
 ### Complete Working Video (Low Quality)
-https://github.com/user-attachments/assets/3a609d2a-ccf2-46d2-949c-0fa9011dc9a9
+https://github.com/user-attachments/assets/3a609d2a-ccf2-46d2-949c-0fa9011dc9a9 <br>
+Full workflow demonstration (lower video quality).
 
 ### Demonstration of Robot Moving in Gazebo and 
-https://github.com/user-attachments/assets/21f5cb7f-b785-42d2-b51c-ce0586326b63
+https://github.com/user-attachments/assets/21f5cb7f-b785-42d2-b51c-ce0586326b63 <br>
+Robot navigation and path planning in Gazebo simulation.
 
 ## Getting Started (Read Before Action)
 
@@ -102,19 +104,25 @@ source ~/.bashrc
 ## Launching the System
 
 ### Launch the Robot with Gazebo Environment
+---
 ```bash
 ros2 launch planner_nav_robot spawn_robot.launch.py 
 ```
 ### Launch Navigation Stack
+---
 ```bash
 ros2 launch planner_nav_robot navigation.launch.py 
 ```
 ### Launch all necessary nodes
+---
 ```bash
 ros2 launch planner_nav_robot plansys_plan.launch.py
 ```
 
-Everything works automatically.
+**Terminal Output:** <br>
+- Terminal 1: Gazebo window with robot in environment
+- Terminal 2: RViz window showing navigation data
+- Terminal 3: PlanSys2 planner initialization and action execution logs
 
 ## Implementation Details
 
