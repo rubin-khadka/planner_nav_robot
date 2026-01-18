@@ -23,7 +23,23 @@ find_package(sensor_msgs REQUIRED)
 find_package(image_transport REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
 
+find_package(rosidl_default_generators REQUIRED)
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/MarkerList.msg"  
+)
+
+rosidl_get_typesupport_target(cpp_typesupport_target
+  ${PROJECT_NAME} rosidl_typesupport_cpp
+)
+
+ament_export_dependencies(rosidl_default_runtime)
+
+include_directories(
+  include
+)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
@@ -117,6 +133,16 @@ ament_target_dependencies(sorting_marker_action
   geometry_msgs
   nav2_msgs
   lifecycle_msgs
+  std_msgs    
+  rosidl_default_runtime 
+)
+
+target_link_libraries(detect_marker_action
+  ${cpp_typesupport_target}
+)
+
+target_link_libraries(sorting_marker_action
+  ${cpp_typesupport_target}
 )
 
 install(TARGETS
@@ -139,8 +165,10 @@ install(DIRECTORY
   meshes
   src
   pddl
+  msg
 DESTINATION share/${PROJECT_NAME}
 )
+
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
