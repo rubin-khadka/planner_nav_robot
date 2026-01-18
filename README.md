@@ -91,6 +91,12 @@ ros2 launch planner_nav_robot spawn_robot.launch.py
 ```bash
 ros2 launch planner_nav_robot navigation.launch.py 
 ```
+### Launch all necessary nodes
+```bash
+ros2 launch planner_nav_robot plansys_plan.launch.py
+```
+
+Everything works automatically.
 
 ## Implementation Details
 
