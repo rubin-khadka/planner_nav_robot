@@ -28,14 +28,11 @@ The Robot we created was not working properly with nav2 so we decided to take Ro
 
 ## Video Demonstrations
 
-
+### Video 1: Complete Assignment Working Video (Low Quality)
 https://github.com/user-attachments/assets/3a609d2a-ccf2-46d2-949c-0fa9011dc9a9
 
-
-
+### Video 2: Robot Moving in Gazebo with Nav2
 https://github.com/user-attachments/assets/21f5cb7f-b785-42d2-b51c-ce0586326b63
-
-
 
 ## Getting Started (Read Before Action)
 
