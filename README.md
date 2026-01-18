@@ -29,7 +29,9 @@ The Robot we created was not working properly with nav2 so we decided to take Ro
 ## Video Demonstrations
 
 ### Phase 1: Navigate and Detect all Marker(High Quality)
-https://github.com/user-attachments/assets/64d0b4f2-a5a4-4002-950c-c4ea55feb494 <br>
+
+https://github.com/user-attachments/assets/64d0b4f2-a5a4-4002-950c-c4ea55feb494 
+
 The robot explores the environment and detects all ArUco markers.
 
 ### Phase 2: Return to Starting Point and Sort the Received Markers (High Quality)
