@@ -35,19 +35,27 @@ https://github.com/user-attachments/assets/64d0b4f2-a5a4-4002-950c-c4ea55feb494
 The robot explores the environment and detects all ArUco markers.
 
 ### Phase 2: Return to Starting Point and Sort the Received Markers (High Quality)
-https://github.com/user-attachments/assets/40baffac-e5bf-4ac1-96e7-4bd717320511 <br>
+
+https://github.com/user-attachments/assets/40baffac-e5bf-4ac1-96e7-4bd717320511
+
 The robot returns to the starting point and sorts detected markers.
 
 ### Phase 3: Navigate to Sorted Marker and Process Image (High Quality)
-https://github.com/user-attachments/assets/d88f0765-4c75-4fda-be30-225bf08e76a2 <br>
+
+https://github.com/user-attachments/assets/d88f0765-4c75-4fda-be30-225bf08e76a2 
+
 The robot navigates to specific markers based on the sorting results.
 
 ### Complete Working Video (Low Quality)
-https://github.com/user-attachments/assets/3a609d2a-ccf2-46d2-949c-0fa9011dc9a9 <br>
+
+https://github.com/user-attachments/assets/3a609d2a-ccf2-46d2-949c-0fa9011dc9a9 
+
 Full workflow demonstration (lower video quality).
 
-### Demonstration of Robot Moving in Gazebo and 
-https://github.com/user-attachments/assets/21f5cb7f-b785-42d2-b51c-ce0586326b63 <br>
+### Demonstration of Robot Moving in Gazebo and Nav2
+
+https://github.com/user-attachments/assets/21f5cb7f-b785-42d2-b51c-ce0586326b63
+
 Robot navigation and path planning in Gazebo simulation.
 
 ## Getting Started (Read Before Action)
