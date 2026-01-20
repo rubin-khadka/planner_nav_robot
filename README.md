@@ -21,10 +21,18 @@
     - [Prerequisites](#prerequisites)
     - [Setup](#setup)
 - [Launching the System](#launching-the-system)
+    - [Launch the Robot with Gazebo Environment](#launch-the-robot-with-gazebo-environment)
+    - [Launch Navigaiton Stack](#launch-navigation-stack)
+    - [Launch all Necessary Nodes](#launch-all-necessary-nodes)
+- [Implementation Details](#implementation-details)
+    - [Phase 1: Exploration and Marker Detection](#phase-1-exploration-and-marker-detection)
+    - [Phase 2: Return to Start and Marker Sorting](#phase-2-return-to-start-and-marker-sorting)
+    - [Phase 3: Targeted Navigation and Image Processing](#phase-3-targeted-navigation-and-image-processing)
+- [Project Structure](#project-structure)
 
 ## Introduction
 
-The Robot we created was not working properly with nav2 so we decided to take Robot Model and Navigation code from: [MOGI-ROS/Week-7-8-Gazebo-basics](https://github.com/MOGI-ROS/Week-7-8-ROS2-Navigation)
+This project implements a three-phase robotic system for autonomous exploration, marker detection, and image processing. The robot navigates a known environment, detects ArUco markers, sorts them, and processes their images. Due to initial navigation challenges with our custom robot model, we utilized the robot model and navigation stack from: [MOGI-ROS/Week-7-8-Gazebo-basics](https://github.com/MOGI-ROS/Week-7-8-ROS2-Navigation)
 
 ## Video Demonstrations
 
@@ -118,21 +126,21 @@ source ~/.bashrc
 ```bash
 ros2 launch planner_nav_robot spawn_robot.launch.py 
 ```
+This launches the robot in Gazebo Environment.
+
 ### Launch Navigation Stack
 ---
 ```bash
 ros2 launch planner_nav_robot navigation.launch.py 
 ```
+This launches the RViz window showing navigation data.
+
 ### Launch all necessary nodes
 ---
 ```bash
 ros2 launch planner_nav_robot plansys_plan.launch.py
 ```
-
-**Terminal Output:** <br>
-- Terminal 1: Gazebo window with robot in environment
-- Terminal 2: RViz window showing navigation data
-- Terminal 3: PlanSys2 planner initialization and action execution logs
+This launches PlanSys2 planner and all other necessary nodes.
 
 ## Implementation Details
 
@@ -231,6 +239,53 @@ This phase employs two specialized nodes working in conjunction with the continu
 - Each subsequent marker's waypoint is connected to the next in the sorted sequence
 - This creates a directed path that the robot must follow in Phase 3
 
+### Phase 3: Targeted Navigation and Image Processing
+---
+After successful completion of Phase 2, the robot executes the final phase: navigating to each marker in sorted order and performing image processing. This phase uses the connected waypoint structure from Phase 2 to ensure sequential navigation from lowest to highest marker ID.
+
+**Key Components in Phase 3:**
+- **Sorted Marker Sequence**: Ascending order of markers from Phase 2
+- **Connected Waypoints**: Navigation path linking waypoints in sorted sequence
+- **Image Processing**: OpenCV-based marker annotation
+
+This phase employs three specialized nodes:
+
+#### 1. `navigate_to_marker`
+- **Function**: Navigation node triggered by the `navigate_to_marker` PDDL action
+- **Implementation**:
+  - Similar to `navigate_to_waypoint` but for marker-specific targeting
+  - Receives target marker ID and waypoint from the planning system
+  - Uses `nav2` for path planning to marker locations
+
+#### 2. `image_process_action`
+- **Function**: Performs image processing on detected markers
+- **Implementation**:
+  - Captures images when triggered after successful navigation
+  - Uses OpenCV to:
+    - Detect ArUco markers in the image
+    - Draw colored circles around detected markers
+    - Add annotation text with marker IDs
+  - Publishes processed images to `/aruco/processed_marker` topic
+
+#### 3. `get_plan_and_execute`
+- **Function**: Orchestrates Phase 3 execution
+- **Implementation**:
+  - Gets plan based on goals from Phase 2
+  - Coordinates `navigate_to_marker` and `image_process_action` for each marker
+  - Tracks completion status
+
+**Workflow in Phase 3:**
+1. Planning system gets plan with connected waypoint sequence
+2. For each marker in sorted order:
+   a. `get_plan_and_execute` triggers `navigate_to_marker` with current marker ID
+   b. `navigate_to_marker` guides robot to marker's waypoint
+   c. Visual servoing fine-tunes robot position to center marker
+   d. `image_process_action` captures and processes marker image
+   e. OpenCV processing includes detection, circling, and annotation
+   f. Processed image published to `/aruco/processed_marker` topic
+3. Sequence repeats for all markers in sorted list
+4. Mission completes when all markers processed
+
 ## Project Structure
 ```bash
 aruco_marker_robot/
@@ -282,3 +337,11 @@ aruco_marker_robot/
 ├── package.xml
 └── README.md
 ```
+## Summary
+
+This ROS2-based autonomous system implements a three-phase mission for marker detection and processing. Phase 1 explores a known environment to detect ArUco markers, Phase 2 returns to start and sorts markers by ID, and Phase 3 navigates to sorted markers for image processing. Built with Nav2 for navigation, PlanSys2 for planning, and OpenCV for computer vision, the system demonstrates complete autonomous operation from exploration to targeted image capture and annotation in a Gazebo simulation environment.
+
+**Course:** Experimental Robotics Laboratory<br>
+**Year:** 2026<br>
+**Status:** Assignment Completed
+
