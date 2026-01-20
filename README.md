@@ -29,6 +29,7 @@
     - [Phase 2: Return to Start and Marker Sorting](#phase-2-return-to-start-and-marker-sorting)
     - [Phase 3: Targeted Navigation and Image Processing](#phase-3-targeted-navigation-and-image-processing)
 - [Project Structure](#project-structure)
+- [Summary](#summary)
 
 ## Introduction
 
@@ -288,7 +289,7 @@ This phase employs three specialized nodes:
 
 ## Project Structure
 ```bash
-aruco_marker_robot/
+planner_nav_robot/
 ├── launch/
 │   ├── mapping.launch.py
 │   ├── navigation.launch.py
