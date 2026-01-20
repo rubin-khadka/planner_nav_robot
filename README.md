@@ -33,7 +33,9 @@
 
 ## Introduction
 
-This project implements a three-phase robotic system for autonomous exploration, marker detection, and image processing. The robot navigates a known environment, detects ArUco markers, sorts them, and processes their images. Due to initial navigation challenges with our custom robot model, we utilized the robot model and navigation stack from: [MOGI-ROS/Week-7-8-Gazebo-basics](https://github.com/MOGI-ROS/Week-7-8-ROS2-Navigation)
+This project implements a three-phase robotic system for autonomous exploration, marker detection, and image processing. The robot navigates a known environment, detects ArUco markers, sorts them, and processes their images. 
+
+**Note:** Due to initial navigation challenges with our custom robot model, we utilized the robot model and navigation stack from: [MOGI-ROS/Week-7-8-Gazebo-basics](https://github.com/MOGI-ROS/Week-7-8-ROS2-Navigation)
 
 ## Video Demonstrations
 
@@ -142,6 +144,8 @@ This launches the RViz window showing navigation data.
 ros2 launch planner_nav_robot plansys_plan.launch.py
 ```
 This launches PlanSys2 planner and all other necessary nodes.
+
+**No Further Commands Needed:** The entire workflow from initial exploration to final image processing runs autonomously once these three launch files are executed. Monitor the terminal outputs for real-time progress updates and mission status.
 
 ## Implementation Details
 
