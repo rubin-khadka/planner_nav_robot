@@ -330,7 +330,3 @@ planner_nav_robot/
 
 This ROS2-based autonomous system implements a three-phase mission for marker detection and processing. Phase 1 explores a known environment to detect ArUco markers, Phase 2 returns to start and sorts markers by ID, and Phase 3 navigates to sorted markers for image processing. Built with Nav2 for navigation, PlanSys2 for planning, and OpenCV for computer vision, the system demonstrates complete autonomous operation from exploration to targeted image capture and annotation in a Gazebo simulation environment.
 
-**Course:** Experimental Robotics Laboratory<br>
-**Year:** 2026<br>
-**Status:** Assignment Completed
-
