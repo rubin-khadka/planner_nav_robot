@@ -1,18 +1,10 @@
-# Experimental Robotics Laboratory - Assignment 2
+# Experimental Robotics Laboratory
 
 ### Authors
 
 **Rubin Khadka Chhetri**  
 `Student ID: 6558048`  
 [![GitHub](https://img.shields.io/badge/GitHub-Profile-181717?logo=github)](https://github.com/rubin-khadka)
-
-**Sarvenaz Ashoori**  
-`Student ID: 6878764`  
-[![GitHub](https://img.shields.io/badge/GitHub-Profile-181717?logo=github)](https://github.com/sarvenazrobotics)
-
-**Abdul Hayee Hafiz**  
-`Student ID: 6029926`  
-[![GitHub](https://img.shields.io/badge/GitHub-Profile-181717?logo=github)](https://github.com/abdulhayee181)
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -34,8 +26,6 @@
 ## Introduction
 
 This project implements a three-phase robotic system for autonomous exploration, marker detection, and image processing. The robot navigates a known environment, detects ArUco markers, sorts them, and processes their images. 
-
-**Note:** Due to initial navigation challenges with our custom robot model, we utilized the robot model and navigation stack from: [MOGI-ROS/Week-7-8-Gazebo-basics](https://github.com/MOGI-ROS/Week-7-8-ROS2-Navigation)
 
 ## Video Demonstrations
 
